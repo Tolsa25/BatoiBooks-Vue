@@ -4,12 +4,14 @@ import api from '../services/api'
 export const useBookStore = defineStore('bookStore', {
     state: () => ({
         books: [],
+        modules: [],
         cart: [],
         messages: []
     }),
     getters: {
         totalBooks: (state) => state.books.length,
-        totalPrice: (state) => state.books.reduce((total, book) => total + book.price, 0).toFixed(2)
+        totalPrice: (state) => state.books.reduce((total, book) => total + book.price, 0).toFixed(2),
+        sortedModules: (state) => [...state.modules].sort((a, b) => a.cliteral.localeCompare(b.cliteral))
     },
     actions: {
         async fetchBooks() {
@@ -18,6 +20,14 @@ export const useBookStore = defineStore('bookStore', {
                 this.books = response.data
             } catch (error) {
                 this.addMessage('Error al recuperar los libros: ' + error.message, 'error')
+            }
+        },
+        async fetchModules() {
+            try {
+                const response = await api.get('/modules')
+                this.modules = response.data
+            } catch (error) {
+                this.addMessage('Error al recuperar los módulos: ' + error.message, 'error')
             }
         },
         async addBook(book) {

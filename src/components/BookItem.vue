@@ -1,12 +1,16 @@
 <template>
   <div class="cardBook">
     <div class="card-body">
+      <div class="card-image" v-if="book.photo">
+        <img :src="'/' + book.photo" :alt="book.idModule" />
+      </div>
       <p>Libro: {{ book.id }}</p>
-      <h3>{{ book.title }} ({{ book.id }})</h3>
+      <h3>Módulo: {{ book.idModule }}</h3>
       <h4>{{ book.publisher }}</h4>
       <p>{{ book.pages }} páginas</p>
       <p>Estado: {{ book.status }}</p>
-      <p>No vendido aún</p>
+      <p v-if="book.soldDate">Vendido el: {{ book.soldDate }}</p>
+      <p v-else>No vendido aún</p>
       <p>{{ book.comments }}</p>
       <h3>{{ book.price }}€</h3>
       

@@ -9,10 +9,11 @@
 
           <div class="form-group">
               <label for="module">Módulo:</label>
-              <select id="module" v-model="book.module" required>
-                  <option value="DAW">DAW</option>
-                  <option value="DAM">DAM</option>
-                  <option value="ASIX">ASIX</option>
+              <select id="module" v-model="book.idModule" required>
+                  <option value="" disabled>Selecciona un módulo</option>
+                  <option v-for="mod in store.sortedModules" :key="mod.code" :value="mod.code">
+                      {{ mod.cliteral }} ({{ mod.code }})
+                  </option>
               </select>
           </div>
 
@@ -33,18 +34,26 @@
 
           <div class="form-group radio-group">
               <label>Estado:</label>
-              <div>
-                  <input type="radio" id="new" value="new" v-model="book.status">
-                  <label for="new">Nuevo</label>
+              <div class="radio-options">
+                  <span class="radio-item">
+                      <input type="radio" id="new" value="new" v-model="book.status">
+                      <label for="new">Nuevo</label>
+                  </span>
                   
-                  <input type="radio" id="good" value="good" v-model="book.status">
-                  <label for="good">Bueno</label>
+                  <span class="radio-item">
+                      <input type="radio" id="good" value="good" v-model="book.status">
+                      <label for="good">Bueno</label>
+                  </span>
                   
-                  <input type="radio" id="bad" value="bad" v-model="book.status">
-                  <label for="bad">Malo</label>
+                  <span class="radio-item">
+                      <input type="radio" id="bad" value="bad" v-model="book.status">
+                      <label for="bad">Malo</label>
+                  </span>
                   
-                  <input type="radio" id="digital" value="digital" v-model="book.status">
-                  <label for="digital">Digital</label>
+                  <span class="radio-item">
+                      <input type="radio" id="digital" value="digital" v-model="book.status">
+                      <label for="digital">Digital</label>
+                  </span>
               </div>
           </div>
 
@@ -78,7 +87,7 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { useBookStore } from '../stores/bookStore'
 
 const store = useBookStore()
@@ -91,7 +100,7 @@ const initialBook = {
     price: 0,
     pages: 0,
     status: 'new',
-    module: 'DAW',
+    idModule: '',
     comments: '',
     cover: ''
 }
@@ -113,4 +122,8 @@ const submitForm = async () => {
 const resetForm = () => {
     Object.assign(book, initialBook)
 }
+
+onMounted(() => {
+    store.fetchModules()
+})
 </script>
