@@ -24,5 +24,6 @@ const totalPrice = computed(() => store.totalPrice)
 
 onMounted(() => {
   store.fetchBooks()
+  store.fetchModules()
 })
 </script>

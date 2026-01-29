@@ -5,17 +5,25 @@ export const useBookStore = defineStore('bookStore', {
     state: () => ({
         books: [],
         modules: [],
-        cart: [],
+        cart: JSON.parse(localStorage.getItem('cart')) || [],
         messages: []
     }),
     getters: {
         totalBooks: (state) => state.books.length,
         totalPrice: (state) => state.books.reduce((total, book) => total + book.price, 0).toFixed(2),
         sortedModules: (state) => [...state.modules].sort((a, b) => a.cliteral.localeCompare(b.cliteral)),
-        getBookById: (state) => (id) => state.books.find(book => book.id == id)
+        getBookById: (state) => (id) => state.books.find(book => book.id == id),
+        getModuleDescription: (state) => (code) => {
+            const mod = state.modules.find(m => m.code === code)
+            return mod ? mod.cliteral : code
+        },
+        isInCart: (state) => (bookId) => {
+            return !!state.cart.find(b => b.id === bookId)
+        }
     },
     actions: {
         async fetchBooks() {
+            if (this.books.length > 0) return
             try {
                 const response = await api.get('/books')
                 this.books = response.data
@@ -24,6 +32,7 @@ export const useBookStore = defineStore('bookStore', {
             }
         },
         async fetchModules() {
+            if (this.modules.length > 0) return
             try {
                 const response = await api.get('/modules')
                 this.modules = response.data
@@ -62,8 +71,16 @@ export const useBookStore = defineStore('bookStore', {
             }
         },
         addToCart(book) {
-            this.cart.push(book)
-            this.addMessage('Libro añadido al carrito', 'info')
+            if (!this.cart.find(b => b.id === book.id)) {
+                this.cart.push(book)
+                localStorage.setItem('cart', JSON.stringify(this.cart))
+                this.addMessage('Libro añadido al carrito', 'info')
+            }
+        },
+        removeFromCart(bookId) {
+            this.cart = this.cart.filter(b => b.id !== bookId)
+            localStorage.setItem('cart', JSON.stringify(this.cart))
+            this.addMessage('Libro eliminado del carrito', 'info')
         },
         addMessage(text, type = 'info') {
             this.messages.push({ text, type, id: Date.now() })

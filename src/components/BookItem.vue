@@ -5,7 +5,7 @@
         <img :src="'/' + book.photo" :alt="book.idModule" />
       </div>
       <p>Libro: {{ book.id }}</p>
-      <h3>Módulo: {{ book.idModule }}</h3>
+      <h3>Módulo: {{ store.getModuleDescription(book.idModule) }}</h3>
       <h4>{{ book.publisher }}</h4>
       <p>{{ book.pages }} páginas</p>
       <p>Estado: {{ book.status }}</p>
@@ -15,15 +15,17 @@
       <h3 class="price-tag">{{ book.price }}€</h3>
       
       <div class="card-actions-container">
-          <button @click="store.addToCart(book)">
-              <span class="material-icons">add_shopping_cart</span>
-          </button>
-          <button @click="editBook(book)">
-              <span class="material-icons">mode_edit</span>
-          </button>
-          <button @click="deleteBook">
-              <span class="material-icons">delete</span>
-          </button>
+          <slot name="actions">
+              <button @click="store.addToCart(book)" :disabled="store.isInCart(book.id)">
+                  <span class="material-icons">{{ store.isInCart(book.id) ? 'done' : 'add_shopping_cart' }}</span>
+              </button>
+              <button @click="editBook(book)">
+                  <span class="material-icons">mode_edit</span>
+              </button>
+              <button @click="deleteBook">
+                  <span class="material-icons">delete</span>
+              </button>
+          </slot>
       </div>
     </div>
   </div>
