@@ -1,13 +1,13 @@
 <template>
   <div class="content-wrapper">
        <div class="main-column">
-          <BooksList />
+          <BookForm />
        </div>
   </div>
 </template>
 
 <script setup>
-import BooksList from '../components/BooksList.vue'
+import BookForm from '../components/BookForm.vue'
 </script>
 
 <style scoped>

@@ -1,6 +1,6 @@
 <template>
   <div id="form-section">
-      <h2>Añadir libro</h2>
+      <h2>{{ formTitle }}</h2>
       <form id="addBookForm" @submit.prevent="submitForm">
           <div class="form-group hidden-id-group">
               <label for="id">ID:</label>
@@ -79,7 +79,7 @@
           </div>
           
            <div class="form-actions">
-              <button type="submit">Añadir</button>
+              <button type="submit">{{ submitButtonText }}</button>
               <button type="button" @click="resetForm">Reset</button>
           </div>
       </form>
@@ -87,9 +87,12 @@
 </template>
 
 <script setup>
-import { reactive, onMounted } from 'vue'
+import { reactive, onMounted, computed, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useBookStore } from '../stores/bookStore'
 
+const route = useRoute()
+const router = useRouter()
 const store = useBookStore()
 
 const initialBook = {
@@ -106,24 +109,75 @@ const initialBook = {
 }
 
 const book = reactive({ ...initialBook })
+const originalBook = reactive({ ...initialBook })
+
+// Computed property para saber si estamos editando
+const isEditing = computed(() => !!route.params.id)
+
+// Computed property para el título del formulario
+const formTitle = computed(() => isEditing.value ? 'Editar libro' : 'Añadir libro')
+
+// Computed property para el texto del botón
+const submitButtonText = computed(() => isEditing.value ? 'Actualizar' : 'Añadir')
+
+// Función para cargar el libro si estamos editando
+const loadBook = () => {
+    if (route.params.id) {
+        const bookToEdit = store.getBookById(route.params.id)
+        if (bookToEdit) {
+            Object.assign(book, bookToEdit)
+            Object.assign(originalBook, bookToEdit)
+        }
+    }
+}
 
 const submitForm = async () => {
-    // Generate simple ID if empty (handled by json-server usually but...)
-    // json-server auto-generates id if not provided or compatible.
-    // We send without ID for new items or string ID?
-    // Let's copy payload
     const payload = { ...book }
-    delete payload.id // let server handle ID
     
-    await store.addBook(payload)
-    resetForm()
+    if (isEditing.value) {
+        // Actualizar libro existente
+        await store.updateBook(book.id, payload)
+    } else {
+        // Añadir nuevo libro
+        delete payload.id // let server handle ID
+        await store.addBook(payload)
+    }
+    
+    // Navegar a la lista de libros después de guardar
+    router.push('/')
 }
 
 const resetForm = () => {
-    Object.assign(book, initialBook)
+    if (isEditing.value) {
+        // Si estamos editando, recargar los datos originales
+        Object.assign(book, originalBook)
+    } else {
+        // Si estamos añadiendo, limpiar el formulario a sus valores por defecto
+        book.id = ''
+        book.title = ''
+        book.author = ''
+        book.publisher = ''
+        book.price = 0
+        book.pages = 0
+        book.status = 'new'
+        book.idModule = ''
+        book.comments = ''
+        book.cover = ''
+    }
 }
+
+// Watch para detectar cambios en la ruta
+watch(() => route.params.id, () => {
+    if (route.params.id) {
+        loadBook()
+    } else {
+        Object.assign(book, initialBook)
+        Object.assign(originalBook, initialBook)
+    }
+}, { immediate: true })
 
 onMounted(() => {
     store.fetchModules()
+    store.fetchBooks() // Necesario para tener los libros disponibles
 })
 </script>

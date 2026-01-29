@@ -2139,28 +2139,19 @@
       "id": "6"
     },
     {
-      "idUser": 4,
-      "idModule": "0376",
+      "id": "7",
+      "title": "retert",
+      "author": "fsfsdfs",
       "publisher": "McGraw-Hill",
-      "price": 15,
+      "price": 30,
       "pages": 173,
       "status": "bad",
-      "photo": "9788448626662.jpeg",
+      "idModule": "0376",
       "comments": "Fet pols",
-      "soldDate": "",
-      "id": "7"
-    },
-    {
+      "cover": "",
       "idUser": 4,
-      "idModule": "0612",
-      "publisher": "McGraw-Hill",
-      "price": 15,
-      "pages": 173,
-      "status": "good",
-      "photo": "",
-      "comments": "",
-      "soldDate": "",
-      "id": "8"
+      "photo": "9788448626662.jpeg",
+      "soldDate": ""
     },
     {
       "idUser": 4,
@@ -2185,30 +2176,6 @@
       "comments": "",
       "soldDate": "",
       "id": "10"
-    },
-    {
-      "id": "e32a",
-      "title": "adssfaf",
-      "author": "afafa",
-      "publisher": "McGraw-Hill",
-      "price": 0.02,
-      "pages": 3,
-      "status": "good",
-      "idModule": "0486",
-      "comments": "",
-      "cover": ""
-    },
-    {
-      "id": "78d1",
-      "title": "rwrw",
-      "author": "sdadada",
-      "publisher": "McGraw-Hill",
-      "price": 0,
-      "pages": 22,
-      "status": "digital",
-      "idModule": "0021",
-      "comments": "fafa",
-      "cover": ""
     }
   ]
 }

@@ -11,7 +11,8 @@ export const useBookStore = defineStore('bookStore', {
     getters: {
         totalBooks: (state) => state.books.length,
         totalPrice: (state) => state.books.reduce((total, book) => total + book.price, 0).toFixed(2),
-        sortedModules: (state) => [...state.modules].sort((a, b) => a.cliteral.localeCompare(b.cliteral))
+        sortedModules: (state) => [...state.modules].sort((a, b) => a.cliteral.localeCompare(b.cliteral)),
+        getBookById: (state) => (id) => state.books.find(book => book.id == id)
     },
     actions: {
         async fetchBooks() {
@@ -37,6 +38,18 @@ export const useBookStore = defineStore('bookStore', {
                 this.addMessage('Libro añadido correctamente', 'success')
             } catch (error) {
                 this.addMessage('Error al añadir el libro: ' + error.message, 'error')
+            }
+        },
+        async updateBook(id, book) {
+            try {
+                const response = await api.put(`/books/${id}`, book)
+                const index = this.books.findIndex(b => b.id == id)
+                if (index !== -1) {
+                    this.books[index] = response.data
+                }
+                this.addMessage('Libro actualizado correctamente', 'success')
+            } catch (error) {
+                this.addMessage('Error al actualizar el libro: ' + error.message, 'error')
             }
         },
         async deleteBook(id) {

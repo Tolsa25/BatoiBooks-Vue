@@ -12,7 +12,7 @@
       <p v-if="book.soldDate">Vendido el: {{ book.soldDate }}</p>
       <p v-else>No vendido aún</p>
       <p>{{ book.comments }}</p>
-      <h3>{{ book.price }}€</h3>
+      <h3 class="price-tag">{{ book.price }}€</h3>
       
       <div class="card-actions-container">
           <button @click="store.addToCart(book)">
@@ -30,7 +30,10 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
 import { useBookStore } from '../stores/bookStore'
+
+const router = useRouter()
 
 const props = defineProps({
   book: {
@@ -42,8 +45,9 @@ const props = defineProps({
 const store = useBookStore()
 
 const editBook = (book) => {
-    store.addMessage("Funcionalidad de edición no implementada todavía", "info")
+    router.push(`/edit/${book.id}`)
 }
+
 const deleteBook = () => {
     store.deleteBook(props.book.id)
 }
