@@ -310,3 +310,18 @@ button:focus-visible {
 #addBookForm .hidden-id-group {
   display: none;
 }
+
+.error-message {
+  color: #ff6b6b;
+  font-size: 14px;
+  margin-top: 5px;
+  grid-column: 2 / 3;
+  text-align: left;
+}
+
+input.error,
+select.error,
+textarea.error {
+  border-color: #ff6b6b !important;
+  box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2) !important;
+}
